@@ -7,10 +7,24 @@ const router = express.Router();
 router.post('/register', async (req, res) => {
     try {
         const { email, password, firstName, lastName } = req.body;
+
+        // Check for missing fields
+        if (!email || !password || !firstName || !lastName) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+
+        // Check if the user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ error: 'Email is already in use' });
+        }
+
+        // Create and save the new User account
         const user = new User({ email, password, firstName, lastName });
         await user.save();
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
+        // Handle other errors
         res.status(400).json({ error: error.message });
     }
 });
