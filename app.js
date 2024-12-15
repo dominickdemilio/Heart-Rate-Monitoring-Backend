@@ -3,6 +3,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/auth');
 const deviceRoutes = require('./routes/devices');
+const particleRoutes = require('./routes/particle_stuff');
 
 const app = express();
 const PORT = 8000;
@@ -21,6 +22,7 @@ mongoose
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/devices', deviceRoutes);
+app.use('/api/particle', particleRoutes);
 
 app.get('/api/weekly-summary', (req, res) => {
     const summary = {
