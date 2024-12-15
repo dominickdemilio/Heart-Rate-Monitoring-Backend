@@ -72,8 +72,11 @@ router.put('/update', authenticateToken, async (req, res) => {
 
         await user.save();
         res.status(200).json({
-            firstName: user.firstName,
-            lastName: user.lastName,
+            user: {
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+            },
         });
     } catch (error) {
         res.status(500).json({
