@@ -1,3 +1,4 @@
+const express = require('express');
 const axios = require('axios'); // Import axios for Particle API requests
 const router = express.Router();
 
@@ -12,7 +13,7 @@ const PARTICLE_FUNCTION_NAME = 'storeString'; // name registered on the Particle
 const customString = '6:22:8000';
 
 // POST route: /activity
-app.post('/activity', async (req, res) => {
+router.post('/activity', async (req, res) => {
     const { API_Key, temp1, temp2 } = req.body; // Extract variables from the request body
 
     // Check if API Key is valid
