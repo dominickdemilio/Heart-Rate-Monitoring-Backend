@@ -1,6 +1,7 @@
 const express = require('express');
 const User = require('../models/User');
-const { generateToken } = require('../utils/auth');
+const { generateToken, authenticateToken } = require('../utils/auth');
+
 const router = express.Router();
 
 // Register a new User
@@ -50,6 +51,35 @@ router.post('/login', async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
+    }
+});
+
+// Update user account details
+router.put('/update', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { firstName, lastName, password } = req.body;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Update info
+        if (firstName) user.firstName = firstName;
+        if (lastName) user.lastName = lastName;
+        if (password) user.password = password;
+
+        await user.save();
+        res.status(200).json({
+            firstName: user.firstName,
+            lastName: user.lastName,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Failed to update user',
+            error: error.message,
+        });
     }
 });
 
