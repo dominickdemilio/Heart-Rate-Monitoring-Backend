@@ -53,6 +53,33 @@ router.delete('/remove/:deviceId', authenticateToken, async (req, res) => {
     }
 });
 
+// Update device details
+router.put('/update/:deviceId', authenticateToken, async (req, res) => {
+    try {
+        const { deviceId } = req.params;
+        const { timeRange, frequency } = req.body;
+
+        const device = await Device.findById(deviceId);
+
+        if (!device) {
+            return res.status(404).json({ message: 'Device not found' });
+        }
+
+        // Update device details
+        if (timeRange) device.timeRange = timeRange;
+        if (frequency !== undefined) device.frequency = frequency;
+
+        await device.save();
+
+        res.status(200).json({
+            message: 'Device updated successfully',
+            device,
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Get user's devices
 router.get('/', authenticateToken, async (req, res) => {
     try {
