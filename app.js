@@ -1,7 +1,13 @@
 const express = require('express');
 const cors = require('cors'); // Import CORS middleware
 const axios = require('axios'); // Import axios for Particle API requests
+
 const app = express();
+const PORT = 8000;
+
+// Enable CORS
+app.use(cors());
+app.use(express.json());
 
 // Generate a random API Key
 const API_KEY = 'ip505f1w3i986bhbaqi99'; // Example API Key
@@ -11,10 +17,7 @@ console.log(`Generated API Key: ${API_KEY}`); // Print the generated API Key on 
 const PARTICLE_ACCESS_TOKEN = 'c52115ea9877e6e6872a6d1af3063d3e42b7aa2b'; // Particle access token
 const PARTICLE_DEVICE_ID = 'e00fce6834abc7249e822f6f'; //  Particle device ID
 const PARTICLE_FUNCTION_NAME = 'storeString'; // name registered on the Particle device
-const customString = '6:22:5000';
-// Enable CORS
-app.use(cors());
-app.use(express.json());
+const customString = '6:22:' + String(PORT);
 
 // POST route: /activity
 app.post('/activity', async (req, res) => {
@@ -70,8 +73,16 @@ app.post('/activity', async (req, res) => {
     }
 });
 
+app.get('/api/weekly-summary', (req, res) => {
+    const summary = {
+        average: 72,
+        min: 60,
+        max: 119,
+    };
+    res.json(summary);
+});
+
 // Start the server
-const PORT = 3000; // Use port 3000
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });
