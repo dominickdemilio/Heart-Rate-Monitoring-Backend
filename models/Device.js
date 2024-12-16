@@ -6,6 +6,8 @@ const DeviceSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
+    access_token: { type: String, required: true },
+    particle_id: { type: String, required: true },
     name: { type: String, required: true },
     timeRange: { start: String, end: String },
     frequency: { type: Number, required: true },

@@ -7,11 +7,14 @@ const router = express.Router();
 // Add device
 router.post('/add', authenticateToken, async (req, res) => {
     try {
-        const { name, timeRange, frequency } = req.body;
+        const { access_token, particle_id, name, timeRange, frequency } =
+            req.body;
 
         // Create a new device
         const newDevice = await Device.create({
             userId: req.user.id,
+            access_token,
+            particle_id,
             name,
             timeRange,
             frequency,
@@ -80,7 +83,7 @@ router.put('/update/:deviceId', authenticateToken, async (req, res) => {
     }
 });
 
-// Get user's devices
+// Get a user's devices
 router.get('/', authenticateToken, async (req, res) => {
     try {
         const devices = await Device.find({ userId: req.user.id });

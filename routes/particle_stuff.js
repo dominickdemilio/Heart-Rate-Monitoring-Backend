@@ -7,10 +7,10 @@ const API_KEY = 'ip505f1w3i986bhbaqi99'; // Example API Key
 // console.log(`Generated API Key: ${API_KEY}`); // Print the generated API Key on server startup
 
 // Particle configuration
-const PARTICLE_ACCESS_TOKEN = 'c52115ea9877e6e6872a6d1af3063d3e42b7aa2b'; // Particle access token
-const PARTICLE_DEVICE_ID = 'e00fce6834abc7249e822f6f'; //  Particle device ID
+// const PARTICLE_ACCESS_TOKEN = 'c52115ea9877e6e6872a6d1af3063d3e42b7aa2b'; // Particle access token
+// const PARTICLE_DEVICE_ID = 'e00fce6834abc7249e822f6f'; //  Particle device ID
 const PARTICLE_FUNCTION_NAME = 'storeString'; // name registered on the Particle device
-const customString = '6:22:8000';
+const customString = '6:22:8000'; // Changed to minutes???
 
 // POST route: /activity
 router.post('/activity', async (req, res) => {
