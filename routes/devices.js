@@ -117,4 +117,71 @@ router.post('/add-data/:deviceId', authenticateToken, async (req, res) => {
     }
 });
 
+// Get weekly summary data
+router.get('/summary/:deviceId/weekly', authenticateToken, async (req, res) => {
+    try {
+        const { deviceId } = req.params;
+
+        const device = await Device.findById(deviceId);
+
+        if (!device) {
+            return res.status(404).json({ message: 'Device not found' });
+        }
+
+        // Determine first day to get data for
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+        // Get raw data
+        const weeklyData = device.timeSeriesData.filter(
+            (data) => new Date(data.timestamp) >= oneWeekAgo
+        );
+
+        // Calculate average, min, max
+        const heartRates = weeklyData.map((data) => data.heartRate);
+        const average =
+            heartRates.reduce((sum, value) => sum + value, 0) /
+                heartRates.length || 0;
+        const min = Math.min(...heartRates);
+        const max = Math.max(...heartRates);
+
+        res.status(200).json({ average, min, max });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get detailed daily data
+router.get('/details/:deviceId/daily', authenticateToken, async (req, res) => {
+    try {
+        const { deviceId } = req.params;
+        const { date } = req.query;
+
+        const device = await Device.findById(deviceId);
+
+        if (!device) {
+            return res.status(404).json({ message: 'Device not found' });
+        }
+
+        // Start time
+        const targetDate = new Date(date);
+        targetDate.setHours(0, 0, 0, 0);
+
+        // End time
+        const nextDay = new Date(targetDate);
+        nextDay.setDate(nextDay.getDate() + 1);
+
+        // Get raw data
+        const dailyData = device.timeSeriesData.filter(
+            (data) =>
+                new Date(data.timestamp) >= targetDate &&
+                new Date(data.timestamp) < nextDay
+        );
+
+        res.status(200).json({ dailyData });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 module.exports = router;
