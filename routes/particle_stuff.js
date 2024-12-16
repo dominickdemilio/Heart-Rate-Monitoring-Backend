@@ -14,14 +14,15 @@ const customString = '6:22:8000';
 
 // POST route: /activity
 router.post('/activity', async (req, res) => {
-    const { API_Key, temp1, temp2 } = req.body; // Extract variables from the request body
+    const { API_Key, temp1, temp2, temp } = req.body; // Extract variables from the request body
 
     // Check if API Key is valid
     const isValidApiKey = API_Key === API_KEY;
 
     console.log('Validation Result:', isValidApiKey ? 'Success' : 'Failure');
-    console.log('Extracted temp1:', temp1);
-    console.log('Extracted temp2:', temp2);
+    console.log('Extracted heart:', temp1);
+    console.log('Extracted red:', temp2);
+    console.log('Extracted time:', temp);
     console.log('Custom String:', customString);
 
     if (isValidApiKey) {
