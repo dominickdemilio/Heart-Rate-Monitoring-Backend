@@ -22,15 +22,6 @@ mongoose
 app.use('/api/auth', authRoutes);
 app.use('/api/devices', deviceRoutes);
 
-app.get('/api/weekly-summary', (req, res) => {
-    const summary = {
-        average: 72,
-        min: 60,
-        max: 119,
-    };
-    res.json(summary);
-});
-
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
