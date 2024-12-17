@@ -68,6 +68,24 @@ router.put('/update/:deviceId', authenticateToken, async (req, res) => {
             return res.status(404).json({ message: 'Device not found' });
         }
 
+        try {
+            // Send the custom string to the Particle device, so it knows to update
+            const response = await axios.post(
+                `https://api.particle.io/v1/devices/${PARTICLE_DEVICE_ID}/${PARTICLE_FUNCTION_NAME}`,
+                new URLSearchParams({
+                    access_token: PARTICLE_ACCESS_TOKEN,
+                    arg: customString, // The string to send to the Particle device
+                }).toString(),
+                {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                }
+            );
+        } catch (err) {
+            console.log(err.message);
+        }
+
         // Update device details
         if (timeRange) device.timeRange = timeRange;
         if (frequency !== undefined) device.frequency = frequency;
@@ -98,18 +116,15 @@ router.get('/', authenticateToken, async (req, res) => {
 // Add time series data to a device
 router.post('/add-data', authenticateToken, async (req, res) => {
     try {
-        const { API_KEY, temp1, temp2, temp } = req.body;
+        const { API_KEY, ir, red, time, id } = req.body; // TODO timestamps
 
-        console.log('RECEIVED DATA!!');
-        console.log(temp1);
-
-        const device = await Device.findById(deviceId);
+        const device = await Device.findById(id);
 
         if (!device) {
             return res.status(404).json({ message: 'Device not found' });
         }
 
-        device.timeSeriesData.push({ temp1, temp2 });
+        device.timeSeriesData.push({ ir, red });
         await device.save();
 
         res.status(201).json({
