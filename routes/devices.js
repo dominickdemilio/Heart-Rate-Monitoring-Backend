@@ -94,10 +94,11 @@ router.get('/', authenticateToken, async (req, res) => {
 });
 
 // Add time series data to a device
-router.post('/add-data/:deviceId', authenticateToken, async (req, res) => {
+router.post('/add-data', authenticateToken, async (req, res) => {
     try {
+        const { API_KEY, temp1, temp2, temp } = req.body;
+
         const { deviceId } = req.params;
-        const { heartRate, oxygenSaturation } = req.body;
 
         const device = await Device.findById(deviceId);
 
