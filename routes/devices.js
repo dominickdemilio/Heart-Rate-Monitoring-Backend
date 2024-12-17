@@ -60,7 +60,7 @@ router.delete('/remove/:deviceId', authenticateToken, async (req, res) => {
 router.put('/update/:deviceId', authenticateToken, async (req, res) => {
     try {
         const { deviceId } = req.params;
-        const { timeRange, frequency } = req.body;
+        const { timeRange, frequency, access_token, particle_id } = req.body;
 
         const device = await Device.findById(deviceId);
 
@@ -71,6 +71,8 @@ router.put('/update/:deviceId', authenticateToken, async (req, res) => {
         // Update device details
         if (timeRange) device.timeRange = timeRange;
         if (frequency !== undefined) device.frequency = frequency;
+        if (access_token) device.access_token = access_token;
+        if (particle_id) device.particle_id = particle_id;
 
         await device.save();
 
@@ -98,7 +100,8 @@ router.post('/add-data', authenticateToken, async (req, res) => {
     try {
         const { API_KEY, temp1, temp2, temp } = req.body;
 
-        const { deviceId } = req.params;
+        console.log('RECEIVED DATA!!');
+        console.log(temp1);
 
         const device = await Device.findById(deviceId);
 
@@ -106,7 +109,7 @@ router.post('/add-data', authenticateToken, async (req, res) => {
             return res.status(404).json({ message: 'Device not found' });
         }
 
-        device.timeSeriesData.push({ heartRate, oxygenSaturation });
+        device.timeSeriesData.push({ temp1, temp2 });
         await device.save();
 
         res.status(201).json({
