@@ -141,7 +141,7 @@ router.get('/summary/:deviceId/weekly', authenticateToken, async (req, res) => {
     try {
         const { deviceId } = req.params;
 
-        const device = await Device.findById(deviceId);
+        const device = await Device.findOne({ particle_id: deviceId });
 
         if (!device) {
             return res.status(404).json({ message: 'Device not found' });
@@ -153,11 +153,11 @@ router.get('/summary/:deviceId/weekly', authenticateToken, async (req, res) => {
 
         // Get raw data
         const weeklyData = device.timeSeriesData.filter(
-            (data) => new Date(data.timestamp) >= oneWeekAgo
+            (data) => new Date(data.time) >= oneWeekAgo
         );
 
         // Calculate average, min, max
-        const heartRates = weeklyData.map((data) => data.heartRate);
+        const heartRates = weeklyData.map((data) => data.ir);
         const average =
             heartRates.reduce((sum, value) => sum + value, 0) /
                 heartRates.length || 0;
@@ -176,7 +176,7 @@ router.get('/details/:deviceId/daily', authenticateToken, async (req, res) => {
         const { deviceId } = req.params;
         const { date } = req.query;
 
-        const device = await Device.findById(deviceId);
+        const device = await Device.findOne({ particle_id: deviceId });
 
         if (!device) {
             return res.status(404).json({ message: 'Device not found' });
@@ -193,8 +193,8 @@ router.get('/details/:deviceId/daily', authenticateToken, async (req, res) => {
         // Get raw data
         const dailyData = device.timeSeriesData.filter(
             (data) =>
-                new Date(data.timestamp) >= targetDate &&
-                new Date(data.timestamp) < nextDay
+                new Date(data.time) >= targetDate &&
+                new Date(data.time) < nextDay
         );
 
         res.status(200).json({ dailyData });
