@@ -13,9 +13,9 @@ const DeviceSchema = new mongoose.Schema({
     frequency: { type: Number, required: true },
     timeSeriesData: [
         {
-            timestamp: { type: Date, default: Date.now },
-            heartRate: Number,
-            oxygenSaturation: Number,
+            time: { type: Date, default: Date.now },
+            ir: Number,
+            red: Number,
         },
     ],
 });

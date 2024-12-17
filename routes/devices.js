@@ -118,13 +118,13 @@ router.post('/add-data', authenticateToken, async (req, res) => {
     try {
         const { API_KEY, ir, red, time, id } = req.body; // TODO timestamps
 
-        const device = await Device.findById(id);
+        const device = await Device.findOne({ particle_id: id });
 
         if (!device) {
             return res.status(404).json({ message: 'Device not found' });
         }
 
-        device.timeSeriesData.push({ ir, red });
+        device.timeSeriesData.push({ ir, red, time });
         await device.save();
 
         res.status(201).json({
